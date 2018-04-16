@@ -27,20 +27,11 @@ class Players extends Component {
     }
   }
 
-  // enterArena() {
-  //   if (this.state.length === 2) {
-  //     return (
-  //       <Link to='/arena' />
-  //     );
-  //   }
-  // }
-
-
   render() {
 
     console.log(this.state.fighters)
 
-    const { onSelect, enterArena } = this;
+    const { onSelect } = this;
     const { players } = this.props;
     const { fighters } = this.state;
     return (
