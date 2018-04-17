@@ -11,8 +11,12 @@ class Arena extends Component {
       playerHealth: 100,
       opponents: opponents,
       opponentHealth: 100,
-      currentMovePlayer: '',
-      currentMoveOpponent: ''
+      playerAttackPhrase: '',
+      opponentAttackPhrase: '',
+      playerBlockStatus: '',
+      opponentBlockStatus: '',
+      playerDamageTaken: '',
+      opponentDamageTaken: ''
     }
     this.randomAttack = this.randomAttack.bind(this);
     // this.battle = this.battle.bind(this);
@@ -33,7 +37,7 @@ class Arena extends Component {
 
   randomAttack(attacker, opponent) {
 
-    this.setState({ currentMovePlayer: '', currentMoveOpponent: '' })
+    this.setState({ playerAttackPhrase: '', opponentAttackPhrase: '' })
 
     const { offense } = this.props;
     const { player, playerHealth, opponentHealth } = this.state;
@@ -55,36 +59,26 @@ class Arena extends Component {
 
       if (!block) {
         this.setState({
+
+          playerBlockStatus: '',
+          playerDamageTaken: '',
+          opponentAttackPhrase: '',
+
           opponentHealth: opponentHealth - offense[randomOffensiveMove],
-          currentMovePlayer: (
-            <div>
-              <div>
-                {`${attacker.name} used ${randomOffensiveMove} to attack ${opponent.name}.`}
-              </div>
-              <div>
-              {`${opponent.name} could not block ${attacker.name}.`}
-              </div>
-              <div>
-              {`${offense[randomOffensiveMove]} damage points sustained`}
-              </div>
-            </div>
-            )
+          playerAttackPhrase: `${attacker.name} used ${randomOffensiveMove} to attack ${opponent.name}.`,
+          opponentBlockStatus: `${opponent.name} could not block ${attacker.name}.`,
+          opponentDamageTaken: `${offense[randomOffensiveMove]} damage points sustained`
         });
       } else {
         this.setState({
-          currentMovePlayer: (
-            <div>
-              <div>
-                {`${attacker.name} used ${randomOffensiveMove} to attack ${opponent.name}.`}
-              </div>
-              <div>
-              {`${opponent.name} blocked ${attacker.name}!`}
-              </div>
-              <div>
-              {`No damage taken!`}
-              </div>
-            </div>
-            )
+
+          playerBlockStatus: '',
+          playerDamageTaken: '',
+          opponentAttackPhrase: '',
+          // opponentHealth: opponentHealth - offense[randomOffensiveMove],
+          playerAttackPhrase: `${attacker.name} used ${randomOffensiveMove} to attack ${opponent.name}.`,
+          opponentBlockStatus: `${opponent.name} blocked ${attacker.name}!`,
+          opponentDamageTaken: 'No damage taken!'
         });
       }
       // this.clearMove();
@@ -95,44 +89,41 @@ class Arena extends Component {
 
     setTimeout(() => {
 
-      // this.setState({ currentMoveOpponent: '' })
+      // this.setState({ opponentAttackPhrase: '' })
 
       if (!block) {
+
+
+
         this.setState({
+
+          opponentBlockStatus: '',
+          opponentDamageTaken: '',
+          playerAttackPhrase: '',
+
           playerHealth: playerHealth - offense[randomOffensiveMove],
-          currentMoveOpponent: (
-            <div>
-              <div>
-                {`${opponent.name} used ${randomOffensiveMove} to attack ${attacker.name}.`}
-              </div>
-              <div>
-              {`${attacker.name} could not block ${opponent.name}.`}
-              </div>
-              <div>
-              {`${offense[randomOffensiveMove]} damage points sustained`}
-              </div>
-            </div>
-            )
+          opponentAttackPhrase: `${opponent.name} used ${randomOffensiveMove} to attack ${attacker.name}.`,
+          playerBlockStatus: `${attacker.name} could not block ${opponent.name}.`,
+          playerDamageTaken: `${offense[randomOffensiveMove]} damage points sustained`
         });
       } else {
         this.setState({
-          currentMoveOpponent: (
-            <div>
-              <div>
-                {`${opponent.name} used ${randomOffensiveMove} to attack ${attacker.name}.`}
-              </div>
-              <div>
-              {`${attacker.name} blocked ${opponent.name}!`}
-              </div>
-              <div>
-              {`No damage taken!`}
-              </div>
-            </div>
-            )
+
+          opponentBlockStatus: '',
+          opponentDamageTaken: '',
+          playerAttackPhrase: '',
+          // playerHealth: playerHealth - offense[randomOffensiveMove],
+          opponentAttackPhrase: `${opponent.name} used ${randomOffensiveMove} to attack ${attacker.name}.`,
+          playerBlockStatus: `${attacker.name} blocked ${opponent.name}!`,
+          playerDamageTaken: 'No damage taken!'
         });
       }
+
+
+
+
       // this.clearMove();
-    }, 2000)
+    }, 5000)
 
 
 
@@ -145,18 +136,45 @@ class Arena extends Component {
       return null;
     }
 
-    const { player, opponents, playerHealth, opponentHealth, currentMovePlayer, currentMoveOpponent } = this.state;
+    const { player, opponents, playerHealth, opponentHealth, playerAttackPhrase, opponentAttackPhrase, playerBlockStatus, opponentBlockStatus, opponentDamageTaken, playerDamageTaken } = this.state;
     const { randomAttack } = this;
     const opponent = opponents.length ? opponents[0] : null;
 
     return (
       <div>
         <h2>{player.name} vs. {opponents[0].name}</h2>
-        <button onClick={() => randomAttack(player, opponent)} disabled={ opponentHealth <= 0 || playerHealth <= 0 }>Attack!</button>
-        <h4>{player.name}'s Health: {playerHealth}</h4>
-        <h4>{opponent.name}'s Health: {opponentHealth}</h4>
-        <h5>{currentMovePlayer ? currentMovePlayer : null}</h5>
-        <h5>{currentMoveOpponent ? currentMoveOpponent : null}</h5>
+        <button
+          onClick={() => randomAttack(player, opponent)}
+          disabled={ opponentHealth <= 0 || playerHealth <= 0 }
+          className='btn btn-warning'
+        >Attack!</button>
+        <div className='row'>
+          <div className='col'>
+            <img src={player.imageUrl} className='battle-image' />
+            <h4>Health: {playerHealth}</h4>
+            <h5>{playerAttackPhrase ? playerAttackPhrase : null}</h5>
+
+            <h5>{playerBlockStatus ? playerBlockStatus : null}</h5>
+            <h5 style={playerDamageTaken === 'No damage taken!' ? {'color':'green'} : {'color':'red'}}>{playerDamageTaken ? playerDamageTaken : null}</h5>
+
+{/*            <h5>{opponentBlockStatus ? opponentBlockStatus : null}</h5>
+            <h5>{opponentDamageTaken ? opponentDamageTaken : null}</h5>*/}
+          </div>
+          <div className='col'>
+            <img src='/images/vs.png' className='vs' />
+          </div>
+          <div className='col'>
+            <img src={opponent.imageUrl} className='battle-image' />
+            <h4>Health: {opponentHealth}</h4>
+            <h5>{opponentAttackPhrase ? opponentAttackPhrase : null}</h5>
+
+            <h5>{opponentBlockStatus ? opponentBlockStatus : null}</h5>
+            <h5 style={opponentDamageTaken === 'No damage taken!' ? {'color':'green'} : {'color':'red'}}>{opponentDamageTaken ? opponentDamageTaken : null}</h5>
+
+{/*            <h5>{playerBlockStatus ? playerBlockStatus : null}</h5>
+            <h5>{playerDamageTaken ? playerDamageTaken : null}</h5>*/}
+          </div>
+        </div>
         <h2>{playerHealth <= 0 ? 'YOU LOSE!' : opponentHealth <= 0 ? 'YOU WIN!' : null}</h2>
       </div>
     );

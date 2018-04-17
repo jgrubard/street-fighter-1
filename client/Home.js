@@ -4,7 +4,7 @@ const Home = () => {
 
   return (
     <div>
-      Street Fighter!
+      <img src='/images/SF2TLogo.png' id='title-image'/>
     </div>
   );
 }

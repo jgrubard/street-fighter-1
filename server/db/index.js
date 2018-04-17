@@ -7,18 +7,18 @@ const sync = () => {
 
 const seed = () => {
   return Promise.all([
-    Player.create({ name: 'Ken' }),
-    Player.create({ name: 'Ryu' }),
-    Player.create({ name: 'Guile' }),
-    Player.create({ name: 'Dhalsim' }),
-    Player.create({ name: 'Chun Li' }),
-    Player.create({ name: 'Zangeif' }),
-    Player.create({ name: 'Blanka' }),
-    Player.create({ name: 'E. Honda' }),
-    Player.create({ name: 'Balrog' }),
-    Player.create({ name: 'Vega' }),
-    Player.create({ name: 'Sagat' }),
-    Player.create({ name: 'M. Bison' })
+    Player.create({ name: 'Ken', imageUrl: '/images/Ken.png' }),
+    Player.create({ name: 'Ryu', imageUrl: '/images/Ryu.png' }),
+    Player.create({ name: 'Guile', imageUrl: '/images/Guile.png' }),
+    Player.create({ name: 'Dhalsim', imageUrl: '/images/Dhalsim.png' }),
+    Player.create({ name: 'Chun Li', imageUrl: '/images/ChunLi.png' }),
+    Player.create({ name: 'Zangief', imageUrl: '/images/Zangief.png' }),
+    Player.create({ name: 'Blanka', imageUrl: '/images/Blanka.png' }),
+    Player.create({ name: 'E. Honda', imageUrl: '/images/EHonda.png' }),
+    Player.create({ name: 'Balrog', imageUrl: '/images/Balrog.png' }),
+    Player.create({ name: 'Vega', imageUrl: '/images/Vega.png' }),
+    Player.create({ name: 'Sagat', imageUrl: '/images/Sagat.png' }),
+    Player.create({ name: 'M. Bison', imageUrl: '/images/MBison.png' })
   ]);
 }
 

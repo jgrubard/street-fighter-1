@@ -33,23 +33,23 @@ class Players extends Component {
     const { player } = this.state;
     return (
       <div>
-      <InputForm />
+      {/*<InputForm />*/}
         <form>
-          <ul>
+          <div className='select-flex-group'>
             {
               players.map(_player => (
-                <li key={_player.id}>
+                <div key={_player.id} className='select-flex-item'>
                   <input
                     type='checkbox'
                     value={_player.id}
                     onChange={onSelect}
                     disabled={Object.keys(player).length && player.id !== _player.id}
                   />
-                  <label>{_player.name}</label>
-                </li>
+                  <img src={_player.imageUrl} className='select-fighter'/>
+                </div>
               ))
             }
-          </ul>
+          </div>
         </form>
         <h4>Selected Player:</h4>
         <h3>{player.name}</h3>
@@ -57,7 +57,7 @@ class Players extends Component {
           pathname: '/arena',
           state: { player }
         }}>
-          <button disabled={!Object.keys(player).length}>Fight!</button>
+          <button disabled={!Object.keys(player).length} className='btn btn-secondary'>Fight!</button>
         </Link>
       </div>
     );

@@ -1,0 +1,29 @@
+.battle-image {
+  height: 300px;
+  width: auto;
+}
+
+.vs {
+  height: 100px;
+  width: auto;
+  margin-top: 100px;
+}
+
+.select-fighter {
+  height: 125px;
+  width: auto;
+}
+
+.select-flex-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.select-flex-group .select-flex-item {
+  width: 25%;
+}
+
+#title-image {
+  height: 300px;
+  width: auto;
+}
