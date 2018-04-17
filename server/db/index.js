@@ -12,11 +12,13 @@ const seed = () => {
     Player.create({ name: 'Guile' }),
     Player.create({ name: 'Dhalsim' }),
     Player.create({ name: 'Chun Li' }),
+    Player.create({ name: 'Zangeif' }),
+    Player.create({ name: 'Blanka' }),
     Player.create({ name: 'E. Honda' }),
+    Player.create({ name: 'Balrog' }),
     Player.create({ name: 'Vega' }),
     Player.create({ name: 'Sagat' }),
-    Player.create({ name: 'M. Bison' }),
-
+    Player.create({ name: 'M. Bison' })
   ]);
 }
 

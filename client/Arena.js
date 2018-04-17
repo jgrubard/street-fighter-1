@@ -1,95 +1,181 @@
 import React, { Component } from 'react';
-
-// import { attack } from './store/reusableFunctions'
+import { connect } from 'react-redux';
 
 class Arena extends Component {
   constructor(props) {
     super(props);
-    // console.log(props);
-    const { fighters } = this.props.location.state ? this.props.location.state : [];
+    const { player } = this.props.location.state ? this.props.location.state : {};
+    const { opponents } = this.props.opponents.length ? this.props : []
     this.state = {
-      player1: fighters ? fighters[0] : {},
-      player2: fighters ? fighters[1] : {}
+      player: player,
+      playerHealth: 100,
+      opponents: opponents,
+      opponentHealth: 100,
+      currentMovePlayer: '',
+      currentMoveOpponent: ''
     }
-    this.attack = this.attack.bind(this);
-    this.resetGame = this.resetGame.bind(this);
+    this.randomAttack = this.randomAttack.bind(this);
+    // this.battle = this.battle.bind(this);
   }
 
-  // changeHealth(player, health) {
-  //   this.setState({
-  //     [player]: {
-  //       id: player.id,
-  //       name: player.name,
-  //       health
-  //     }
-  //   });
-  // }
+  clearMove() {
+    setTimeout(() => {
+      this.setState({ currentMove: '' })
+    }, 3000)
+  }
 
-  attack(id) {
-    const opponent = id === this.state.player1.id ? [this.state.player1, 'player1'] : [this.state.player2, 'player2'];
-    const newHealth = opponent[0].health - 10;
+  generateMove() {
+    const { offense } = this.props;
+    const randomOffensiveMove = Object.keys(offense)[Math.round(Math.random() * 6)];
+    const block = !!Math.round(Math.random())
+    return [randomOffensiveMove, block];
+  }
 
-    console.log('attacked ', opponent[0])
+  randomAttack(attacker, opponent) {
 
-    // this.changeHealth(opponent[0], newHealth)
-    this.setState({
-      [opponent[1]]: {
-        id: opponent[0].id,
-        name: opponent[0].name,
-        health: newHealth
+    this.setState({ currentMovePlayer: '', currentMoveOpponent: '' })
+
+    const { offense } = this.props;
+    const { player, playerHealth, opponentHealth } = this.state;
+    // const randomOffensiveMove = Object.keys(offense)[Math.round(Math.random() * 6)];
+    // const block = !!Math.round(Math.random())
+    // console.log()
+    // console.log('Attack Type:', randomOffensiveMove);
+    // console.log('Damage:', offense[randomOffensiveMove]);
+    // console.log('blocked:', block);
+    // console.log('--NEXT-ATTACK--')
+
+    let randomOffensiveMove = this.generateMove()[0];
+    let block = this.generateMove()[1];
+
+
+    // console.log(`${attacker.name} used ${randomOffensiveMove} to attack ${opponent.name}`);
+    // console.log(block ? `${opponent.name} blocked ${attacker.name} and took no damage!` : `${opponent.name} could not block ${attacker.name}. ${offense[randomOffensiveMove]} damage points sustained`);
+
+
+      if (!block) {
+        this.setState({
+          opponentHealth: opponentHealth - offense[randomOffensiveMove],
+          currentMovePlayer: (
+            <div>
+              <div>
+                {`${attacker.name} used ${randomOffensiveMove} to attack ${opponent.name}.`}
+              </div>
+              <div>
+              {`${opponent.name} could not block ${attacker.name}.`}
+              </div>
+              <div>
+              {`${offense[randomOffensiveMove]} damage points sustained`}
+              </div>
+            </div>
+            )
+        });
+      } else {
+        this.setState({
+          currentMovePlayer: (
+            <div>
+              <div>
+                {`${attacker.name} used ${randomOffensiveMove} to attack ${opponent.name}.`}
+              </div>
+              <div>
+              {`${opponent.name} blocked ${attacker.name}!`}
+              </div>
+              <div>
+              {`No damage taken!`}
+              </div>
+            </div>
+            )
+        });
       }
-    });
-  }
+      // this.clearMove();
 
-  resetGame() {
-    const players = [this.state.player1, this.state.player2];
-    players.forEach(player => this.changeHealth(player, 100))
+    randomOffensiveMove = this.generateMove()[0];
+    block = this.generateMove()[1];
+
+
+    setTimeout(() => {
+
+      // this.setState({ currentMoveOpponent: '' })
+
+      if (!block) {
+        this.setState({
+          playerHealth: playerHealth - offense[randomOffensiveMove],
+          currentMoveOpponent: (
+            <div>
+              <div>
+                {`${opponent.name} used ${randomOffensiveMove} to attack ${attacker.name}.`}
+              </div>
+              <div>
+              {`${attacker.name} could not block ${opponent.name}.`}
+              </div>
+              <div>
+              {`${offense[randomOffensiveMove]} damage points sustained`}
+              </div>
+            </div>
+            )
+        });
+      } else {
+        this.setState({
+          currentMoveOpponent: (
+            <div>
+              <div>
+                {`${opponent.name} used ${randomOffensiveMove} to attack ${attacker.name}.`}
+              </div>
+              <div>
+              {`${attacker.name} blocked ${opponent.name}!`}
+              </div>
+              <div>
+              {`No damage taken!`}
+              </div>
+            </div>
+            )
+        });
+      }
+      // this.clearMove();
+    }, 2000)
+
+
+
+
   }
 
   render() {
-    const { attack, resetGame } = this;
     if (!this.props.location.state) {
       this.props.history.push('/players');
       return null;
     }
-    const { player1, player2 } = this.state;
-    const fighters = [ player1, player2 ]
-    const loser = fighters.find(fighter => {
-      console.log(fighter.name, fighter.health)
-      return fighter.health === 0
-    });
+
+    const { player, opponents, playerHealth, opponentHealth, currentMovePlayer, currentMoveOpponent } = this.state;
+    const { randomAttack } = this;
+    const opponent = opponents.length ? opponents[0] : null;
+
     return (
       <div>
-        <h2>BATTLE ARENA</h2>
-        <h3>{player1.name} vs. {player2.name}</h3>
-        {
-          fighters.map(player => {
-            const opponent = fighters.find(fighter => fighter.id !== player.id)
-            return (
-              <div key={player.id}>
-                <h1>{player.name}'s Health: {player.health}</h1>
-                <button onClick={() => attack(opponent.id)} disabled={loser}>Attack!</button>
-              </div>
-
-            )
-          })
-        }
-        <h1>
-        {
-          loser ? (
-            <div>
-              {loser.name.toUpperCase() + ' LOSES!'}
-              <button onClick={resetGame}>Play Again</button>
-              <button>Select New Players</button>
-            </div>
-          ) : ''
-        }
-        </h1>
-
-
+        <h2>{player.name} vs. {opponents[0].name}</h2>
+        <button onClick={() => randomAttack(player, opponent)} disabled={ opponentHealth <= 0 || playerHealth <= 0 }>Attack!</button>
+        <h4>{player.name}'s Health: {playerHealth}</h4>
+        <h4>{opponent.name}'s Health: {opponentHealth}</h4>
+        <h5>{currentMovePlayer ? currentMovePlayer : null}</h5>
+        <h5>{currentMoveOpponent ? currentMoveOpponent : null}</h5>
+        <h2>{playerHealth <= 0 ? 'YOU LOSE!' : opponentHealth <= 0 ? 'YOU WIN!' : null}</h2>
       </div>
     );
   }
 }
 
-export default Arena;
+const mapStateToProps = (state) => {
+  return {
+    opponents: state.players,
+    offense: {
+      'Light Punch': 5,
+      'Hard Punch': 7,
+      'Upper Cut': 10,
+      'Light Kick': 6,
+      'Hard Kick': 8,
+      'Roundhouse Kick': 11,
+      'Special Move': 15
+    }
+  }
+}
+
+export default connect(mapStateToProps)(Arena);

@@ -8,61 +8,56 @@ class Players extends Component {
   constructor() {
     super();
     this.state = {
-      fighters: []
+      player: {}
     }
     this.onSelect = this.onSelect.bind(this);
-    // this.enterArena = this.enterArena.bind(this);
   }
 
   onSelect(ev) {
+    const { player } = this.state;
     const id = ev.target.value * 1;
-    const _fighter = this.props.players.find(player => player.id === id);
-    const { fighters } = this.state;
-    if (fighters.length < 3) {
-      if (fighters.indexOf(_fighter) !== -1) {
-        this.setState({ fighters: fighters.filter(fighter => fighter.id !== _fighter.id) });
-      } else {
-        this.setState({ fighters: [ ...fighters, _fighter ] });
-      }
+    const selected = this.props.players.find(_player => _player.id === id);
+    if (!Object.keys(player).length) {
+      this.setState({ player: selected });
+    } else {
+      this.setState({ player: {} });
     }
   }
 
   render() {
 
-    console.log(this.state.fighters)
+    console.log(this.state)
 
     const { onSelect } = this;
     const { players } = this.props;
-    const { fighters } = this.state;
+    const { player } = this.state;
     return (
       <div>
       <InputForm />
         <form>
           <ul>
             {
-              players.map(player => (
-                <li key={player.id}>
+              players.map(_player => (
+                <li key={_player.id}>
                   <input
                     type='checkbox'
-                    value={player.id}
+                    value={_player.id}
                     onChange={onSelect}
-                    disabled={fighters.length === 2 && fighters.indexOf(player) === -1 }
+                    disabled={Object.keys(player).length && player.id !== _player.id}
                   />
-                  <label>{player.name}</label>
+                  <label>{_player.name}</label>
                 </li>
               ))
             }
           </ul>
         </form>
-
-        <h4>Selected Players</h4>
-        <h3>Player 1: {fighters[0] ? fighters[0].name : ''}</h3>
-        <h3>Player 2: {fighters[1] ? fighters[1].name : ''}</h3>
+        <h4>Selected Player:</h4>
+        <h3>{player.name}</h3>
         <Link to={{
           pathname: '/arena',
-          state: { fighters }
+          state: { player }
         }}>
-          <button disabled={fighters.length < 2}>Fight!</button>
+          <button disabled={!Object.keys(player).length}>Fight!</button>
         </Link>
       </div>
     );
